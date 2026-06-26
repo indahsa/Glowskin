@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GlowSkin - Routine Tracker</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>body { font-family: 'Plus Jakarta Sans', sans-serif; }</style>
+</head>
+<body class="bg-[#FFF8F6] text-[#4D6D6D] min-h-screen flex flex-col md:flex-row">
+
+    <!-- Sidebar -->
+    <aside class="w-full md:w-64 bg-white border-b md:border-b-0 md:border-r border-[#FFE4E4] p-6 flex flex-col justify-between shrink-0">
+        <div>
+            <div class="flex items-center gap-2 mb-8">
+                <span class="text-2xl">✨</span>
+                <h3 class="text-xl font-bold text-[#E8A0A0] tracking-wider">GlowSkin</h3>
+            </div>
+            <nav class="space-y-1.5">
+                <a class="flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-xl text-gray-500 hover:bg-[#FFF0F0] hover:text-[#E8A0A0] transition" href="/">
+                    <i class="fa-solid fa-chart-pie text-lg w-5"></i> Dashboard
+                </a>
+                <a class="flex items-center gap-3 px-4 py-3 text-sm font-bold rounded-xl bg-[#FFD9D9] text-[#333333] transition" href="/tracker">
+                    <i class="fa-solid fa-calendar-check text-lg w-5"></i> Routine Tracker
+                </a>
+                <a class="flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-xl text-gray-500 hover:bg-[#FFF0F0] hover:text-[#E8A0A0] transition" href="/diary">
+                    <i class="fa-solid fa-book-open-reader text-lg w-5"></i> Skin Diary
+                </a>
+                <a class="flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-xl text-gray-500 hover:bg-[#FFF0F0] hover:text-[#E8A0A0] transition" href="/recommendations">
+                    <i class="fa-solid fa-sparkles text-lg w-5"></i> Recommendations
+                </a>
+                <a class="flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-xl text-gray-500 hover:bg-[#FFF0F0] hover:text-[#E8A0A0] transition" href="/articles">
+                    <i class="fa-solid fa-newspaper text-lg w-5"></i> Articles
+                </a>
+            </nav>
+        </div>
+        <div class="mt-8">
+            <a href="/logout" class="flex items-center justify-center gap-2 w-full py-2.5 text-xs font-bold text-red-500 bg-red-50 hover:bg-red-100 rounded-xl transition">
+                <i class="fa-solid fa-arrow-right-from-bracket"></i> Keluar App
+            </a>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 p-6 md:p-10 max-w-4xl mx-auto w-full">
+        <div class="mb-8">
+            <h1 class="text-3xl font-bold text-gray-800">Skincare Routine Tracker 📅</h1>
+            <p class="text-gray-400 text-sm mt-1">Kelola langkah-langkah skincare harianmu di sini!</p>
+        </div>
+
+        <!-- Form Tambah Langkah -->
+        <div class="bg-white p-6 rounded-2xl border border-[#FFE4E4] shadow-sm mb-6">
+            <h3 class="font-bold text-gray-700 mb-3 text-sm">Tambah Langkah Rutinitas Baru</h3>
+            <form action="/add-routine" method="POST" class="flex gap-2">
+                <input type="text" name="step" placeholder="Contoh: Pakai Sunscreen Skintific, Cuci Muka Cerave..." required 
+                       class="flex-1 px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-[#E8A0A0]">
+                <button type="submit" class="px-5 py-2.5 bg-[#FFD9D9] hover:bg-[#FFAAAA] text-gray-700 font-bold text-sm rounded-xl transition shrink-0">
+                    + Tambah
+                </button>
+            </form>
+        </div>
+
+        <!-- Daftar Rutinitas -->
+        <div class="bg-white rounded-2xl border border-[#FFE4E4] shadow-sm overflow-hidden">
+            <div class="p-4 bg-gray-50 border-b border-[#FFE4E4]">
+                <h2 class="font-bold text-gray-700 text-sm">Langkah Skincare Kamu</h2>
+            </div>
+            <div class="divide-y divide-gray-100">
+                <% if (routines.length === 0) { %>
+                    <div class="p-8 text-center text-gray-400 text-sm">Belum ada rincian langkah. Yuk tambah di atas!</div>
+                <% } else { %>
+                    <% routines.forEach(routine => { %>
+                        <div class="p-4 flex items-center justify-between gap-4">
+                            <div class="flex items-center gap-3">
+                                <form action="/toggle-routine/<%= routine.id %>" method="POST">
+                                    <button type="submit" class="text-xl transition">
+                                        <% if (routine.completed === 1) { %>
+                                            <i class="fa-solid fa-square-check text-green-500"></i>
+                                        <% } else { %>
+                                            <i class="fa-regular fa-square text-gray-300 hover:text-[#E8A0A0]"></i>
+                                        <% } %>
+                                    </button>
+                                </form>
+                                <span class="text-sm <%= routine.completed === 1 ? 'line-through text-gray-300' : 'text-gray-700 font-medium' %>">
+                                    <%= routine.step %>
+                                </span>
+                            </div>
+                            <form action="/delete-routine/<%= routine.id %>" method="POST">
+                                <button type="submit" class="text-gray-400 hover:text-red-500 transition text-sm p-1">
+                                    <i class="fa-solid fa-trash-can"></i>
+                                </button>
+                            </form>
+                        </div>
+                    <% }) %>
+                <% } %>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

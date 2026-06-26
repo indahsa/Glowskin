@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GlowSkin - Skin Diary</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>body { font-family: 'Plus Jakarta Sans', sans-serif; }</style>
+</head>
+<body class="bg-[#FFF8F6] text-[#4D6D6D] min-h-screen flex flex-col md:flex-row">
+
+    <aside class="w-full md:w-64 bg-white border-b md:border-b-0 md:border-r border-[#FFE4E4] p-6 flex flex-col justify-between shrink-0">
+        <div>
+            <div class="flex items-center gap-2 mb-8">
+                <span class="text-2xl">✨</span>
+                <h3 class="text-xl font-bold text-[#E8A0A0] tracking-wider">GlowSkin</h3>
+            </div>
+            <nav class="space-y-1.5">
+                <a class="flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-xl text-gray-500 hover:bg-[#FFF0F0] hover:text-[#E8A0A0] transition" href="/">
+                    <i class="fa-solid fa-chart-pie text-lg w-5"></i> Dashboard
+                </a>
+                <a class="flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-xl text-gray-500 hover:bg-[#FFF0F0] hover:text-[#E8A0A0] transition" href="/tracker">
+                    <i class="fa-solid fa-calendar-check text-lg w-5"></i> Routine Tracker
+                </a>
+                <a class="flex items-center gap-3 px-4 py-3 text-sm font-bold rounded-xl bg-[#FFD9D9] text-[#333333] transition" href="/diary">
+                    <i class="fa-solid fa-book-open-reader text-lg w-5"></i> Skin Diary
+                </a>
+                <a class="flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-xl text-gray-500 hover:bg-[#FFF0F0] hover:text-[#E8A0A0] transition" href="/recommendations">
+                    <i class="fa-solid fa-sparkles text-lg w-5"></i> Recommendations
+                </a>
+                <a class="flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-xl text-gray-500 hover:bg-[#FFF0F0] hover:text-[#E8A0A0] transition" href="/articles">
+                    <i class="fa-solid fa-newspaper text-lg w-5"></i> Articles
+                </a>
+            </nav>
+        </div>
+        <div class="mt-8">
+            <a href="/logout" class="flex items-center justify-center gap-2 w-full py-2.5 text-xs font-bold text-red-500 bg-red-50 hover:bg-red-100 rounded-xl transition">
+                <i class="fa-solid fa-arrow-right-from-bracket"></i> Keluar App
+            </a>
+        </div>
+    </aside>
+
+    <main class="flex-1 p-6 md:p-10 max-w-4xl mx-auto w-full">
+        <div class="mb-8">
+            <h1 class="text-3xl font-bold text-gray-800">Skin Diary 📖</h1>
+            <p class="text-gray-400 text-sm mt-1">Catat perkembangan cerita dan foto kondisi kulit wajahmu!</p>
+        </div>
+
+        <div class="bg-white p-6 rounded-2xl border border-[#FFE4E4] shadow-sm mb-8">
+            <h3 class="font-bold text-gray-700 mb-4 text-sm">Tulis Jurnal Kulit Hari Ini</h3>
+            <form action="/add-diary" method="POST" enctype="multipart/form-data" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-gray-400 mb-1">TANGGAL CATATAN</label>
+                    <input type="date" name="date" required class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-[#E8A0A0]">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-400 mb-1">CATATAN KONDISI / KELUHAN</label>
+                    <textarea name="note" rows="3" placeholder="Contoh: Hari ini tumbuh jerawat kecil di pipi kanan setelah pakai foundation kemarin..." required 
+                              class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-[#E8A0A0]"></textarea>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-400 mb-1">UNGGAH FOTO WAJAH (OPSIONAL)</label>
+                    <input type="file" name="image" accept="image/*" class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-[#FFF0F0] file:text-[#E8A0A0] hover:file:bg-[#FFD9D9]">
+                </div>
+                <button type="submit" class="w-full py-2.5 bg-[#FFD9D9] hover:bg-[#FFAAAA] text-gray-700 font-bold text-sm rounded-xl transition">
+                    Simpan Catatan Jurnal ✨
+                </button>
+            </form>
+        </div>
+
+        <div class="space-y-4">
+            <h2 class="font-bold text-gray-800 text-md mb-2">Riwayat Catatan Kamu</h2>
+            <% if (diaryEntries.length === 0) { %>
+                <div class="bg-white p-8 text-center text-gray-400 border border-[#FFE4E4] rounded-2xl text-sm">Belum ada riwayat diary yang kamu tulis.</div>
+            <% } else { %>
+                <% diaryEntries.forEach(entry => { %>
+                    <div class="bg-white p-5 rounded-2xl border border-[#FFE4E4] shadow-sm flex flex-col md:flex-row gap-5 items-start">
+                        <% if (entry.image_url) { %>
+                            <img src="<%= entry.image_url %>" class="w-24 h-24 object-cover rounded-xl border border-gray-100 shrink-0">
+                        <% } else { %>
+                            <div class="w-24 h-24 bg-gray-50 rounded-xl border border-dashed border-gray-200 flex items-center justify-center text-gray-300 shrink-0 text-xs">No Photo</div>
+                        <% } %>
+                        <div class="flex-1">
+                            <span class="inline-block px-2.5 py-1 bg-red-50 text-[#E8A0A0] text-xs font-bold rounded-lg mb-2"><%= entry.date %></span>
+                            <p class="text-sm text-gray-600 font-medium leading-relaxed"><%= entry.note %></p>
+                        </div>
+                    </div>
+                <% }) %>
+            <% } %>
+        </div>
+    </main>
+</body>
+</html>
